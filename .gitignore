@@ -1,70 +1,74 @@
-# assets/*
-# upload_temp/*
-# upload/*
-# !upload/.htaccess
-# upload.tar.gz
-# protected/runtime/*
+assets/*
+upload_temp/*
+upload/*
+!upload/.htaccess
+upload.tar.gz
+protected/runtime/*
 # protected/assets/*
 # protected/config/Environment.php
 # protected/config/params.php
 # protected/modules/user/UserModule.php
-# logs/*
-# rockmongo/*
-# dump/*
-# /.metadata/
-# /.settings/
-# .buildpath
-# .project
-# /nbproject/*
-# *.stackdump
-# *.*~
-# *.php~
-# *.swp
-# .DS_Store
-# Thumbs.db
-# Desktop.ini
-# /index.php
-# bower_components/*
-# /JavaApplication1/nbproject/private/
-# protected/config/console.php
-# recruitmentcvs/*
-# workflows/*
-# protected/controllers/ErrorPageController.php
-# protected/config/params.php
-# .idea/
-# vendor/*
-# .vscode/
-# /composer.lock
+logs/*
+rockmongo/*
+dump/*
+/.metadata/
+/.settings/
+.buildpath
+.project
+/nbproject/*
+*.stackdump
+*.*~
+*.php~
+*.swp
+.DS_Store
+Thumbs.db
+Desktop.ini
+/index.php
+bower_components/*
+/JavaApplication1/nbproject/private/
+protected/config/console.php
+recruitmentcvs/*
+workflows/*
+protected/controllers/ErrorPageController.php
+protected/config/params.php
+.idea/
+vendor/*
+.vscode/
+/composer.lock
 
-# **/node_modules/*
+**/node_modules/*
 
-# protected/config/data_transfer.php
-# payslip-import-executor/node_modules/*
-# payslip-import-executor/.env
-# common-import-executor/node_modules/*
-# common-import-executor/.env
-# /ms
-# .idea/
-# .history
+protected/config/data_transfer.php
+payslip-import-executor/node_modules/*
+payslip-import-executor/.env
+common-import-executor/node_modules/*
+common-import-executor/.env
+/ms
+.idea/
+.history
 
-# protected/tests/.phpunit.result.cache
-# protected/tests/reports/*
-# protected/tests/.phpunit.cache/*
+protected/tests/.phpunit.result.cache
+protected/tests/reports/*
+protected/tests/.phpunit.cache/*
 
-# protected/vendor/composer/autoload_classmap.php
-# protected/vendor/composer/autoload_real.php
+protected/vendor/composer/autoload_classmap.php
+protected/vendor/composer/autoload_real.php
 
-# /build.properties
-# .php-cs-fixer.cache
+/build.properties
+.php-cs-fixer.cache
 
-# protected/extensions
-# protected/modules/onboarding
-# protected/modules/rewards
-# protected/modules/studio
-# protected/tests/unit/extensions
-# protected/tests/unit/modules/onboading
-# protected/tests/unit/modules/rewards
-# protected/tests/unit/modules/studio
+protected/extensions
+protected/modules/onboarding
+protected/modules/rewards
+protected/modules/studio
+protected/tests/unit/extensions
+protected/tests/unit/modules/onboading
+protected/tests/unit/modules/rewards
+protected/tests/unit/modules/studio
 
-# protected/sonar-issues.json
+protected/sonar-issues.json
 .env
+framework/*
+images/*
+protected/extensions/*
+
