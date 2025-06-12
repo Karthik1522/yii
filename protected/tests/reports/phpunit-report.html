@@ -51,101 +51,32 @@
         </style>
     </head>
     <body>
-        <h2>Category</h2>
-        <ul>
-            <li class="success">Get collection name</li>
-            <li class="success">Rules</li>
-            <li class="success">Attribute labels</li>
-            <li class="success">Static model method</li>
-            <li class="success">Exist in parent validation</li>
-            <li class="success">Before save</li>
-            <li class="success">Generate slug</li>
-            <li class="success">Search provider</li>
-            <li class="success">Get parent name</li>
-            <li class="defect">Get category options</li>
-        </ul>
-        <h2>Dimensions</h2>
-        <ul>
-            <li class="success">Public properties</li>
-            <li class="success">Rules</li>
-            <li class="success">Attribute labels</li>
-            <li class="success">Unit validation</li>
-            <li class="success">Dimension values</li>
-            <li class="success">Data type consistency</li>
-            <li class="success">Methods existence</li>
-            <li class="success">Rules structure</li>
-            <li class="success">Complete property set</li>
-            <li class="success">Unit options</li>
-            <li class="success">Very small dimensions</li>
-            <li class="success">Large dimensions</li>
-        </ul>
-        <h2>Product</h2>
-        <ul>
-            <li class="success">Get collection name</li>
-            <li class="success">Public properties</li>
-            <li class="success">Attribute labels</li>
-            <li class="success">Rules</li>
-            <li class="success">Validate category exists</li>
-            <li class="success">Embedded documents</li>
-            <li class="success">Behaviors</li>
-            <li class="success">Before validate</li>
-            <li class="success">Before save</li>
-            <li class="success">Get category name</li>
-            <li class="success">Search provider</li>
-            <li class="success">Static model method</li>
-            <li class="success">Complete product creation</li>
-            <li class="success">Variants handling</li>
-            <li class="success">Tags processing</li>
-            <li class="success">Data type consistency</li>
-            <li class="success">Methods existence</li>
-            <li class="success">Edge cases</li>
-        </ul>
         <h2>Stock Log</h2>
         <ul>
-            <li class="success">All basic functionality</li>
-            <li class="success">Validate product i d</li>
-            <li class="success">Validate user i d</li>
-            <li class="success">Static methods</li>
-            <li class="success">Add method</li>
-            <li class="success">Search provider</li>
-        </ul>
-        <h2>User</h2>
-        <ul>
             <li class="success">Get collection name</li>
-            <li class="success">Model static method</li>
-            <li class="success">Default role is staff</li>
-            <li class="success">Attribute labels are defined</li>
-            <li class="success">Validation RequiredFields DefaultScenario</li>
-            <li class="success">Validation PasswordRequired OnInsertScenario</li>
-            <li class="success">Validation PasswordRepeatCompare OnInsertScenario</li>
-            <li class="success">Validation UsernameUnique FailsWhenTaken</li>
-            <li class="success">Validation EmailUnique FailsWhenTaken</li>
-            <li class="success">Validation Role Invalid</li>
-            <li class="success">Validation Role Valid</li>
-            <li class="success">ValidatePassword CorrectPassword</li>
-            <li class="success">ValidatePassword IncorrectPassword</li>
-            <li class="success">HashPassword ReturnsValidHash</li>
-            <li class="success">BeforeSave NewRecord SetsTimestampsAndHashesPassword</li>
-            <li class="success">BeforeSave ExistingRecord UpdatesTimestampAndHashesPasswordIfSet</li>
-            <li class="success">BeforeSave LoginScenario DoesNotHashPassword</li>
-            <li class="success">BeforeSave NoPasswordChange DoesNotRehash</li>
-        </ul>
-        <h2>Utility Helpers</h2>
-        <ul>
-            <li class="success">Sanitize ReplacesSpecialCharacters</li>
-            <li class="success">Sanitize AllowsLettersNumbersDots</li>
-            <li class="success">Sanitize MultipleSpecialCharacters</li>
-            <li class="success">Sanitize EmptyString</li>
-        </ul>
-        <h2>Variant</h2>
-        <ul>
-            <li class="success">Public properties</li>
-            <li class="success">Rules</li>
+            <li class="success">Static model returns instance</li>
+            <li class="success">Constants</li>
             <li class="success">Attribute labels</li>
-            <li class="success">Get final price</li>
-            <li class="success">Data type consistency</li>
-            <li class="success">Methods existence</li>
-            <li class="success">Get final price edge cases</li>
+            <li class="success">Rules</li>
+            <li class="success">Get allowed types</li>
+            <li class="success">Get type options</li>
+            <li class="success">Get type name</li>
+            <li class="success">ValidateProductID WithValidProduct</li>
+            <li class="success">ValidateProductID WithInvalidProduct</li>
+            <li class="success">ValidateProductID WithEmptyProductId</li>
+            <li class="success">ValidateProductID WithInvalidFormat</li>
+            <li class="success">ValidateUserID WithValidUser</li>
+            <li class="success">ValidateUserID WithInvalidUser</li>
+            <li class="success">ValidateUserID WithEmptyUserId</li>
+            <li class="defect">Add WithValidData</li>
+            <li class="success">SearchProvider ReturnsDataProvider</li>
+            <li class="success">Valid stock log</li>
+            <li class="success">Required fields validation</li>
+            <li class="defect">Type validation</li>
+            <li class="defect">Quantity fields numerical validation</li>
+            <li class="defect">Reason length validation</li>
+            <li class="success">Valid quantity values</li>
+            <li class="success">Negative quantity values</li>
         </ul>
     </body>
 </html>

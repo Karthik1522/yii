@@ -1,5 +1,8 @@
 <?php
 
+// Import the helper class
+Yii::import('application.components.helpers.SiteHelper');
+
 class SiteController extends Controller
 {
     /**
@@ -49,15 +52,12 @@ class SiteController extends Controller
         try {
             Yii::log('Starting actionTest', CLogger::LEVEL_INFO, 'application.site.test');
 
-            Yii::app()->cache->set('k1', 'karthik');
-            Yii::app()->cache->delete('k1');
-            $data = Yii::app()->cache->get('k1');
+            $testResults = SiteHelper::performCacheTest();
 
-            echo "Inside ActionTest";
-            echo $data;
-            Yii::app()->session['userId'] = 123;
+            echo "Inside ActionTest<br>";
+            echo "Cache data: " . ($testResults['cacheData'] ?: 'null') . "<br>";
+            echo "Session set: " . ($testResults['sessionSet'] ? 'Yes' : 'No') . "<br>";
 
-   
             Yii::log('actionTest completed successfully', CLogger::LEVEL_INFO, 'application.site.test');
         } catch (Exception $e) {
             Yii::log('Error in actionTest: ' . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.test');
@@ -70,8 +70,8 @@ class SiteController extends Controller
         try {
             Yii::log('Starting actionIndex', CLogger::LEVEL_INFO, 'application.site.index');
 
-     
-            $this->redirect(array('/inventory/dashboard/index'));
+            $redirectUrl = SiteHelper::getDefaultRedirectUrl();
+            $this->redirect($redirectUrl);
 
             Yii::log('actionIndex completed successfully', CLogger::LEVEL_INFO, 'application.site.index');
         } catch (Exception $e) {
@@ -86,9 +86,6 @@ class SiteController extends Controller
             Yii::log('Starting actionError', CLogger::LEVEL_INFO, 'application.site.error');
 
             if ($error = Yii::app()->errorHandler->error) {
-                // echo "<pre>";
-                // print_r($error);
-                // exit;
                 if (Yii::app()->request->isAjaxRequest) {
                     echo $error['message'];
                 } else {
@@ -111,23 +108,19 @@ class SiteController extends Controller
         try {
             Yii::log('Starting actionContact', CLogger::LEVEL_INFO, 'application.site.contact');
 
-            // exit("here");
             $model = new ContactForm();
             if (isset($_POST['ContactForm'])) {
-                $model->attributes = $_POST['ContactForm'];
-                if ($model->validate()) {
-                    $name = '=?UTF-8?B?' . base64_encode($model->name) . '?=';
-                    $subject = '=?UTF-8?B?' . base64_encode($model->subject) . '?=';
-                    $headers = "From: $name <{$model->email}>\r\n" .
-                        "Reply-To: {$model->email}\r\n" .
-                        "MIME-Version: 1.0\r\n" .
-                        "Content-Type: text/plain; charset=UTF-8";
+                $result = SiteHelper::processContactForm($_POST['ContactForm']);
+                $model = $result['model'];
 
-                    mail(Yii::app()->params['adminEmail'], $subject, $model->body, $headers);
-                    Yii::app()->user->setFlash('contact', 'Thank you for contacting us. We will respond to you as soon as possible.');
+                if ($result['success']) {
+                    Yii::app()->user->setFlash('contact', $result['message']);
                     $this->refresh();
+                } elseif (isset($result['message'])) {
+                    Yii::app()->user->setFlash('error', $result['message']);
                 }
             }
+
             $this->render('contact', array('model' => $model));
 
             Yii::log('actionContact completed successfully', CLogger::LEVEL_INFO, 'application.site.contact');
@@ -153,11 +146,14 @@ class SiteController extends Controller
             }
 
             if (isset($_POST['LoginForm'])) {
-                $model->attributes = $_POST['LoginForm'];
-                if ($model->validate() && $model->login()) {
-                    $this->redirect(['site/index']);
+                $result = SiteHelper::processLogin($_POST['LoginForm']);
+                $model = $result['model'];
+
+                if ($result['success']) {
+                    $this->redirect($result['redirectUrl']);
                 }
             }
+
             $this->render('login', array('model' => $model));
 
             Yii::log('actionLogin completed successfully', CLogger::LEVEL_INFO, 'application.site.login');
@@ -175,15 +171,14 @@ class SiteController extends Controller
             $model = new User('register');
 
             if (isset($_POST['User'])) {
-                $model->attributes = $_POST['User'];
+                $result = SiteHelper::processRegistration($_POST['User']);
+                $model = $result['model'];
 
-                if ($model->validate()) {
-                    if ($model->save()) {
-                        Yii::app()->user->setFlash('success', 'Registration successful. You can now log in.');
-                        $this->redirect(['site/login']);
-                    } else {
-                        Yii::app()->user->setFlash('error', 'Something went wrong while saving the user.');
-                    }
+                if ($result['success']) {
+                    Yii::app()->user->setFlash('success', $result['message']);
+                    $this->redirect($result['redirectUrl']);
+                } else {
+                    Yii::app()->user->setFlash('error', $result['message']);
                 }
             }
 
@@ -204,8 +199,8 @@ class SiteController extends Controller
         try {
             Yii::log('Starting actionLogout', CLogger::LEVEL_INFO, 'application.site.logout');
 
-            Yii::app()->user->logout();
-            $this->redirect(Yii::app()->homeUrl);
+            $result = SiteHelper::processLogout();
+            $this->redirect($result['redirectUrl']);
 
             Yii::log('actionLogout completed successfully', CLogger::LEVEL_INFO, 'application.site.logout');
         } catch (Exception $e) {

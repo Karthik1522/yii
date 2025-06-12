@@ -12,7 +12,7 @@ class Product extends EMongoDocument
     public $price = 0.00;
     public $image_url;
     public $image_filename_upload;
-    public $dimensions;
+    // public $dimensions;
     public $variants = array();
     public $tags = array();
     public $tags_input;
@@ -81,7 +81,12 @@ class Product extends EMongoDocument
     {
         if (!empty($this->$attribute)) {
             try {
-                $category = Category::model()->findByPk(new ObjectId($this->$attribute));
+                $categoryModel = Category::model();
+                if ($categoryModel === null) {
+                    $this->addError($attribute, 'Invalid Category ID format.');
+                    return;
+                }
+                $category = $categoryModel->findByPk(new ObjectId($this->$attribute));
                 if ($category === null) {
                     $this->addError($attribute, 'The selected category does not exist.');
                 }
@@ -120,6 +125,8 @@ class Product extends EMongoDocument
             $this->tags = array_filter($this->tags, function ($tag) {
                 return !empty($tag);
             });
+            // Reindex the array to ensure consecutive numeric keys
+            $this->tags = array_values($this->tags);
         } elseif (empty($this->tags_input) && !is_array($this->tags)) {
             $this->tags = array();
         }

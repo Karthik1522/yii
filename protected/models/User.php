@@ -3,9 +3,9 @@
 class User extends EMongoDocument
 {
     public $username;
-    public $password;             
-    public $password_repeat;      
-    public $password_hash;       
+    public $password;
+    public $password_repeat;
+    public $password_hash;
     public $email;
     public $role = "staff";
     public $last_login_at;
@@ -80,7 +80,7 @@ class User extends EMongoDocument
         return password_hash($password, PASSWORD_BCRYPT, ['cost' => $cost]);
     }
 
-    protected function beforeSave()
+    public function beforeSave()
     {
         if (!parent::beforeSave()) {
             return false;
@@ -96,7 +96,7 @@ class User extends EMongoDocument
 
         if (!empty($this->password) && $this->getScenario() !== 'login') {
             $this->password_hash = $this->hashPassword($this->password);
-            $this->password = null; 
+            $this->password = null;
             $this->password_repeat = null;
         }
 

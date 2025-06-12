@@ -1,5 +1,8 @@
 <?php
 
+// Import the helper class
+Yii::import('application.components.helpers.StockHelper');
+
 class StockController extends InventoryBaseController
 {
     public function accessRules()
@@ -34,11 +37,10 @@ class StockController extends InventoryBaseController
         Yii::log("Starting actionAdmin", CLogger::LEVEL_INFO, 'application.inventory.stock.admin');
 
         try {
-            $model = new StockLog('search');
-            $model->unsetAttributes();
+            $searchData = isset($_GET['StockLog']) ? $_GET['StockLog'] : null;
+            $model = StockHelper::prepareStockLogSearch($searchData);
 
-            if (isset($_GET['StockLog'])) {
-                $model->attributes = $_GET['StockLog'];
+            if ($searchData) {
                 Yii::log("Applied search filters for stock admin", CLogger::LEVEL_INFO, 'application.inventory.stock.admin');
             }
 

@@ -3,7 +3,7 @@
 use MongoDB\BSON\ObjectId;
 
 // Import the helper class
-Yii::import('application.modules.inventory.helpers.CategoryHelper');
+Yii::import('application.components.helpers.CategoryHelper');
 
 class CategoryController extends InventoryBaseController
 {
