@@ -1,0 +1,41 @@
+<phpunit bootstrap="bootstrap.php"
+	backupGlobals="true"
+	testdox="true"
+	colors="false"
+	cacheDirectory=".phpunit.cache">
+	<php>
+		<ini name="error_reporting" value="-1" />
+		<ini name="memory_limit" value="-1" />
+	</php>
+	<testsuites>
+		<testsuite name="unit">
+			<directory>unit</directory>
+		</testsuite>
+	</testsuites>
+	<logging>
+		<junit outputFile="reports/phpunit-report.xml"/>
+		<testdoxHtml outputFile="reports/phpunit-report.html"/>
+	</logging>
+	<source>
+		<include>
+			<!-- <directory suffix=".php">../commands</directory> -->
+			<directory suffix=".php">../components/helpers</directory>
+			<directory suffix=".php">../controllers</directory>
+			<directory suffix=".php">../models</directory>
+			<directory suffix=".php">../modules</directory>
+		</include>
+		<exclude>
+			<directory suffix=".php">../modules/*/views</directory>
+			<directory suffix=".php">../modules/studio</directory>
+			<directory suffix=".php">../modules/rewards</directory>
+			<directory suffix=".php">../modules/onboarding</directory>
+		</exclude>
+	</source>
+	<coverage includeUncoveredFiles="false">
+		<report>
+			<cobertura outputFile="reports/phpunit-coverage.xml"/>
+			<html outputDirectory="reports/html-coverage"/>
+    		<text outputFile="reports/coverage.txt" showOnlySummary="true"/>
+		</report>
+    </coverage>
+</phpunit>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/data/live/protected/tests/phpunit.xml" tests="75" assertions="321" errors="0" failures="0" skipped="0" time="0.568878">
+    <testsuite name="unit" tests="75" assertions="321" errors="0" failures="0" skipped="0" time="0.568878">
+      <testsuite name="UtilityHelpersTest" file="/data/live/protected/tests/unit/components/helpers/UtilityHelpersTest.php" tests="4" assertions="4" errors="0" failures="0" skipped="0" time="0.037228">
+        <testcase name="testSanitize_ReplacesSpecialCharacters" file="/data/live/protected/tests/unit/components/helpers/UtilityHelpersTest.php" line="14" class="UtilityHelpersTest" classname="UtilityHelpersTest" assertions="1" time="0.031056"/>
+        <testcase name="testSanitize_AllowsLettersNumbersDots" file="/data/live/protected/tests/unit/components/helpers/UtilityHelpersTest.php" line="21" class="UtilityHelpersTest" classname="UtilityHelpersTest" assertions="1" time="0.002170"/>
+        <testcase name="testSanitize_MultipleSpecialCharacters" file="/data/live/protected/tests/unit/components/helpers/UtilityHelpersTest.php" line="28" class="UtilityHelpersTest" classname="UtilityHelpersTest" assertions="1" time="0.001985"/>
+        <testcase name="testSanitize_EmptyString" file="/data/live/protected/tests/unit/components/helpers/UtilityHelpersTest.php" line="36" class="UtilityHelpersTest" classname="UtilityHelpersTest" assertions="1" time="0.002018"/>
+      </testsuite>
+      <testsuite name="UserTest" file="/data/live/protected/tests/unit/models/UserTest.php" tests="18" assertions="51" errors="0" failures="0" skipped="0" time="0.376616">
+        <testcase name="testGetCollectionName" file="/data/live/protected/tests/unit/models/UserTest.php" line="86" class="UserTest" classname="UserTest" assertions="1" time="0.016424"/>
+        <testcase name="testModelStaticMethod" file="/data/live/protected/tests/unit/models/UserTest.php" line="91" class="UserTest" classname="UserTest" assertions="1" time="0.002972"/>
+        <testcase name="testDefaultRoleIsStaff" file="/data/live/protected/tests/unit/models/UserTest.php" line="96" class="UserTest" classname="UserTest" assertions="1" time="0.002764"/>
+        <testcase name="testAttributeLabelsAreDefined" file="/data/live/protected/tests/unit/models/UserTest.php" line="101" class="UserTest" classname="UserTest" assertions="2" time="0.003101"/>
+        <testcase name="testValidation_RequiredFields_DefaultScenario" file="/data/live/protected/tests/unit/models/UserTest.php" line="108" class="UserTest" classname="UserTest" assertions="4" time="0.004832"/>
+        <testcase name="testValidation_PasswordRequired_OnInsertScenario" file="/data/live/protected/tests/unit/models/UserTest.php" line="121" class="UserTest" classname="UserTest" assertions="2" time="0.003375"/>
+        <testcase name="testValidation_PasswordRepeatCompare_OnInsertScenario" file="/data/live/protected/tests/unit/models/UserTest.php" line="133" class="UserTest" classname="UserTest" assertions="5" time="0.003430"/>
+        <testcase name="testValidation_UsernameUnique_FailsWhenTaken" file="/data/live/protected/tests/unit/models/UserTest.php" line="152" class="UserTest" classname="UserTest" assertions="3" time="0.004436"/>
+        <testcase name="testValidation_EmailUnique_FailsWhenTaken" file="/data/live/protected/tests/unit/models/UserTest.php" line="170" class="UserTest" classname="UserTest" assertions="3" time="0.003978"/>
+        <testcase name="testValidation_Role_Invalid" file="/data/live/protected/tests/unit/models/UserTest.php" line="194" class="UserTest" classname="UserTest" assertions="3" time="0.003091"/>
+        <testcase name="testValidation_Role_Valid" file="/data/live/protected/tests/unit/models/UserTest.php" line="207" class="UserTest" classname="UserTest" assertions="2" time="0.003780"/>
+        <testcase name="testValidatePassword_CorrectPassword" file="/data/live/protected/tests/unit/models/UserTest.php" line="227" class="UserTest" classname="UserTest" assertions="1" time="0.004666"/>
+        <testcase name="testValidatePassword_IncorrectPassword" file="/data/live/protected/tests/unit/models/UserTest.php" line="234" class="UserTest" classname="UserTest" assertions="1" time="0.004723"/>
+        <testcase name="testHashPassword_ReturnsValidHash" file="/data/live/protected/tests/unit/models/UserTest.php" line="240" class="UserTest" classname="UserTest" assertions="2" time="0.101190"/>
+        <testcase name="testBeforeSave_NewRecord_SetsTimestampsAndHashesPassword" file="/data/live/protected/tests/unit/models/UserTest.php" line="250" class="UserTest" classname="UserTest" assertions="7" time="0.104596"/>
+        <testcase name="testBeforeSave_ExistingRecord_UpdatesTimestampAndHashesPasswordIfSet" file="/data/live/protected/tests/unit/models/UserTest.php" line="273" class="UserTest" classname="UserTest" assertions="8" time="0.102577"/>
+        <testcase name="testBeforeSave_LoginScenario_DoesNotHashPassword" file="/data/live/protected/tests/unit/models/UserTest.php" line="298" class="UserTest" classname="UserTest" assertions="3" time="0.003373"/>
+        <testcase name="testBeforeSave_NoPasswordChange_DoesNotRehash" file="/data/live/protected/tests/unit/models/UserTest.php" line="314" class="UserTest" classname="UserTest" assertions="2" time="0.003308"/>
+      </testsuite>
+      <testsuite name="CategoryTest" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" tests="10" assertions="28" errors="0" failures="0" skipped="0" time="0.037225">
+        <testcase name="testGetCollectionName" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="112" class="CategoryTest" classname="CategoryTest" assertions="1" time="0.007635"/>
+        <testcase name="testRules" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="117" class="CategoryTest" classname="CategoryTest" assertions="3" time="0.002439"/>
+        <testcase name="testAttributeLabels" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="125" class="CategoryTest" classname="CategoryTest" assertions="1" time="0.002236"/>
+        <testcase name="testStaticModelMethod" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="140" class="CategoryTest" classname="CategoryTest" assertions="1" time="0.002229"/>
+        <testcase name="testExistInParentValidation" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="146" class="CategoryTest" classname="CategoryTest" assertions="5" time="0.006417"/>
+        <testcase name="testBeforeSave" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="183" class="CategoryTest" classname="CategoryTest" assertions="5" time="0.003228"/>
+        <testcase name="testGenerateSlug" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="215" class="CategoryTest" classname="CategoryTest" assertions="4" time="0.002523"/>
+        <testcase name="testSearchProvider" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="234" class="CategoryTest" classname="CategoryTest" assertions="3" time="0.003266"/>
+        <testcase name="testGetParentName" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="254" class="CategoryTest" classname="CategoryTest" assertions="3" time="0.002404"/>
+        <testcase name="testGetCategoryOptions" file="/data/live/protected/tests/unit/modules/inventory/models/CategoryTest.php" line="275" class="CategoryTest" classname="CategoryTest" assertions="2" time="0.004848"/>
+      </testsuite>
+      <testsuite name="DimensionsTest" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" tests="12" assertions="78" errors="0" failures="0" skipped="0" time="0.029461">
+        <testcase name="testPublicProperties" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="23" class="DimensionsTest" classname="DimensionsTest" assertions="9" time="0.005532"/>
+        <testcase name="testRules" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="49" class="DimensionsTest" classname="DimensionsTest" assertions="7" time="0.002150"/>
+        <testcase name="testAttributeLabels" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="113" class="DimensionsTest" classname="DimensionsTest" assertions="3" time="0.002192"/>
+        <testcase name="testUnitValidation" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="128" class="DimensionsTest" classname="DimensionsTest" assertions="5" time="0.002190"/>
+        <testcase name="testDimensionValues" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="144" class="DimensionsTest" classname="DimensionsTest" assertions="9" time="0.002115"/>
+        <testcase name="testDataTypeConsistency" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="174" class="DimensionsTest" classname="DimensionsTest" assertions="4" time="0.002118"/>
+        <testcase name="testMethodsExistence" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="190" class="DimensionsTest" classname="DimensionsTest" assertions="2" time="0.002036"/>
+        <testcase name="testRulesStructure" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="200" class="DimensionsTest" classname="DimensionsTest" assertions="25" time="0.002737"/>
+        <testcase name="testCompletePropertySet" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="213" class="DimensionsTest" classname="DimensionsTest" assertions="4" time="0.002126"/>
+        <testcase name="testUnitOptions" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="228" class="DimensionsTest" classname="DimensionsTest" assertions="4" time="0.002063"/>
+        <testcase name="testVerySmallDimensions" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="239" class="DimensionsTest" classname="DimensionsTest" assertions="3" time="0.002116"/>
+        <testcase name="testLargeDimensions" file="/data/live/protected/tests/unit/modules/inventory/models/DimensionsTest.php" line="251" class="DimensionsTest" classname="DimensionsTest" assertions="3" time="0.002089"/>
+      </testsuite>
+      <testsuite name="ProductTest" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" tests="18" assertions="104" errors="0" failures="0" skipped="0" time="0.053771">
+        <testcase name="testGetCollectionName" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="154" class="ProductTest" classname="ProductTest" assertions="1" time="0.007897"/>
+        <testcase name="testPublicProperties" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="159" class="ProductTest" classname="ProductTest" assertions="17" time="0.002292"/>
+        <testcase name="testAttributeLabels" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="185" class="ProductTest" classname="ProductTest" assertions="3" time="0.002293"/>
+        <testcase name="testRules" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="211" class="ProductTest" classname="ProductTest" assertions="11" time="0.002235"/>
+        <testcase name="testValidateCategoryExists" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="316" class="ProductTest" classname="ProductTest" assertions="3" time="0.003591"/>
+        <testcase name="testEmbeddedDocuments" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="342" class="ProductTest" classname="ProductTest" assertions="4" time="0.002297"/>
+        <testcase name="testBehaviors" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="351" class="ProductTest" classname="ProductTest" assertions="6" time="0.002209"/>
+        <testcase name="testBeforeValidate" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="364" class="ProductTest" classname="ProductTest" assertions="4" time="0.002626"/>
+        <testcase name="testBeforeSave" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="393" class="ProductTest" classname="ProductTest" assertions="7" time="0.002880"/>
+        <testcase name="testGetCategoryName" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="440" class="ProductTest" classname="ProductTest" assertions="4" time="0.003172"/>
+        <testcase name="testSearchProvider" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="465" class="ProductTest" classname="ProductTest" assertions="4" time="0.002834"/>
+        <testcase name="testStaticModelMethod" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="502" class="ProductTest" classname="ProductTest" assertions="4" time="0.003027"/>
+        <testcase name="testCompleteProductCreation" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="522" class="ProductTest" classname="ProductTest" assertions="8" time="0.002188"/>
+        <testcase name="testVariantsHandling" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="544" class="ProductTest" classname="ProductTest" assertions="5" time="0.005551"/>
+        <testcase name="testTagsProcessing" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="570" class="ProductTest" classname="ProductTest" assertions="3" time="0.002496"/>
+        <testcase name="testDataTypeConsistency" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="597" class="ProductTest" classname="ProductTest" assertions="5" time="0.002067"/>
+        <testcase name="testMethodsExistence" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="617" class="ProductTest" classname="ProductTest" assertions="11" time="0.002059"/>
+        <testcase name="testEdgeCases" file="/data/live/protected/tests/unit/modules/inventory/models/ProductTest.php" line="637" class="ProductTest" classname="ProductTest" assertions="4" time="0.002055"/>
+      </testsuite>
+      <testsuite name="StockLogTest" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" tests="6" assertions="20" errors="0" failures="0" skipped="0" time="0.019147">
+        <testcase name="testAllBasicFunctionality" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" line="138" class="StockLogTest" classname="StockLogTest" assertions="7" time="0.003597"/>
+        <testcase name="testValidateProductID" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" line="155" class="StockLogTest" classname="StockLogTest" assertions="2" time="0.002173"/>
+        <testcase name="testValidateUserID" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" line="167" class="StockLogTest" classname="StockLogTest" assertions="2" time="0.003845"/>
+        <testcase name="testStaticMethods" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" line="179" class="StockLogTest" classname="StockLogTest" assertions="5" time="0.002275"/>
+        <testcase name="testAddMethod" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" line="189" class="StockLogTest" classname="StockLogTest" assertions="2" time="0.004658"/>
+        <testcase name="testSearchProvider" file="/data/live/protected/tests/unit/modules/inventory/models/StockLogTest.php" line="198" class="StockLogTest" classname="StockLogTest" assertions="2" time="0.002599"/>
+      </testsuite>
+      <testsuite name="VariantTest" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" tests="7" assertions="36" errors="0" failures="0" skipped="0" time="0.015430">
+        <testcase name="testPublicProperties" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="23" class="VariantTest" classname="VariantTest" assertions="9" time="0.002252"/>
+        <testcase name="testRules" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="49" class="VariantTest" classname="VariantTest" assertions="8" time="0.002307"/>
+        <testcase name="testAttributeLabels" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="120" class="VariantTest" classname="VariantTest" assertions="3" time="0.002113"/>
+        <testcase name="testGetFinalPrice" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="135" class="VariantTest" classname="VariantTest" assertions="5" time="0.002244"/>
+        <testcase name="testDataTypeConsistency" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="166" class="VariantTest" classname="VariantTest" assertions="5" time="0.002081"/>
+        <testcase name="testMethodsExistence" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="186" class="VariantTest" classname="VariantTest" assertions="3" time="0.002112"/>
+        <testcase name="testGetFinalPriceEdgeCases" file="/data/live/protected/tests/unit/modules/inventory/models/VariantTest.php" line="196" class="VariantTest" classname="VariantTest" assertions="3" time="0.002320"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
