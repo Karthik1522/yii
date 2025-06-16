@@ -93,43 +93,43 @@ class SiteHelper
      * @param array $contactData Contact form data
      * @return array Result array with 'success' boolean, 'model' object, and optional 'message'
      */
-    public static function processContactForm($contactData)
-    {
-        Yii::log("Processing contact form", CLogger::LEVEL_INFO, 'application.site.helper.processContactForm');
+    // public static function processContactForm($contactData)
+    // {
+    //     Yii::log("Processing contact form", CLogger::LEVEL_INFO, 'application.site.helper.processContactForm');
 
-        try {
-            $model = new ContactForm();
-            $model->attributes = $contactData;
+    //     try {
+    //         $model = new ContactForm();
+    //         $model->attributes = $contactData;
 
-            if ($model->validate()) {
-                $result = self::sendContactEmail($model);
-                if ($result['success']) {
-                    Yii::log("Successfully sent contact email", CLogger::LEVEL_INFO, 'application.site.helper.processContactForm');
-                    return [
-                        'success' => true,
-                        'model' => $model,
-                        'message' => 'Thank you for contacting us. We will respond to you as soon as possible.'
-                    ];
-                } else {
-                    Yii::log("Failed to send contact email", CLogger::LEVEL_ERROR, 'application.site.helper.processContactForm');
-                    return [
-                        'success' => false,
-                        'model' => $model,
-                        'message' => 'Error sending message. Please try again.'
-                    ];
-                }
-            } else {
-                Yii::log("Contact form validation failed", CLogger::LEVEL_WARNING, 'application.site.helper.processContactForm');
-                return [
-                    'success' => false,
-                    'model' => $model
-                ];
-            }
-        } catch (Exception $e) {
-            Yii::log("Error in processContactForm: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.helper.processContactForm');
-            throw new CHttpException(500, 'Error processing contact form.');
-        }
-    }
+    //         if ($model->validate()) {
+    //             $result = self::sendContactEmail($model);
+    //             if ($result['success']) {
+    //                 Yii::log("Successfully sent contact email", CLogger::LEVEL_INFO, 'application.site.helper.processContactForm');
+    //                 return [
+    //                     'success' => true,
+    //                     'model' => $model,
+    //                     'message' => 'Thank you for contacting us. We will respond to you as soon as possible.'
+    //                 ];
+    //             } else {
+    //                 Yii::log("Failed to send contact email", CLogger::LEVEL_ERROR, 'application.site.helper.processContactForm');
+    //                 return [
+    //                     'success' => false,
+    //                     'model' => $model,
+    //                     'message' => 'Error sending message. Please try again.'
+    //                 ];
+    //             }
+    //         } else {
+    //             Yii::log("Contact form validation failed", CLogger::LEVEL_WARNING, 'application.site.helper.processContactForm');
+    //             return [
+    //                 'success' => false,
+    //                 'model' => $model
+    //             ];
+    //         }
+    //     } catch (Exception $e) {
+    //         Yii::log("Error in processContactForm: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.helper.processContactForm');
+    //         throw new CHttpException(500, 'Error processing contact form.');
+    //     }
+    // }
 
     /**
      * Sends contact email
@@ -137,24 +137,24 @@ class SiteHelper
      * @param ContactForm $model The contact form model
      * @return array Result array with 'success' boolean
      */
-    private static function sendContactEmail($model)
-    {
-        try {
-            $name = '=?UTF-8?B?' . base64_encode($model->name) . '?=';
-            $subject = '=?UTF-8?B?' . base64_encode($model->subject) . '?=';
-            $headers = "From: $name <{$model->email}>\r\n" .
-                "Reply-To: {$model->email}\r\n" .
-                "MIME-Version: 1.0\r\n" .
-                "Content-Type: text/plain; charset=UTF-8";
+    // private static function sendContactEmail($model)
+    // {
+    //     try {
+    //         $name = '=?UTF-8?B?' . base64_encode($model->name) . '?=';
+    //         $subject = '=?UTF-8?B?' . base64_encode($model->subject) . '?=';
+    //         $headers = "From: $name <{$model->email}>\r\n" .
+    //             "Reply-To: {$model->email}\r\n" .
+    //             "MIME-Version: 1.0\r\n" .
+    //             "Content-Type: text/plain; charset=UTF-8";
 
-            $result = mail(Yii::app()->params['adminEmail'], $subject, $model->body, $headers);
+    //         $result = mail(Yii::app()->params['adminEmail'], $subject, $model->body, $headers);
 
-            return ['success' => $result];
-        } catch (Exception $e) {
-            Yii::log("Error sending contact email: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.helper.sendContactEmail');
-            return ['success' => false];
-        }
-    }
+    //         return ['success' => $result];
+    //     } catch (Exception $e) {
+    //         Yii::log("Error sending contact email: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.helper.sendContactEmail');
+    //         return ['success' => false];
+    //     }
+    // }
 
     /**
      * Handles user logout
@@ -183,36 +183,36 @@ class SiteHelper
      *
      * @return array Test results
      */
-    public static function performCacheTest()
-    {
-        try {
-            Yii::log("Performing cache test", CLogger::LEVEL_INFO, 'application.site.helper.performCacheTest');
+    // public static function performCacheTest()
+    // {
+    //     try {
+    //         Yii::log("Performing cache test", CLogger::LEVEL_INFO, 'application.site.helper.performCacheTest');
 
-            // Set cache value
-            Yii::app()->cache->set('k1', 'karthik');
+    //         // Set cache value
+    //         Yii::app()->cache->set('k1', 'karthik');
 
-            // Delete cache value
-            Yii::app()->cache->delete('k1');
+    //         // Delete cache value
+    //         Yii::app()->cache->delete('k1');
 
-            // Try to get deleted value
-            $data = Yii::app()->cache->get('k1');
+    //         // Try to get deleted value
+    //         $data = Yii::app()->cache->get('k1');
 
-            // Set session value
-            Yii::app()->session['userId'] = 123;
+    //         // Set session value
+    //         Yii::app()->session['userId'] = 123;
 
-            return [
-                'success' => true,
-                'cacheData' => $data,
-                'sessionSet' => true
-            ];
-        } catch (Exception $e) {
-            Yii::log("Error in performCacheTest: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.helper.performCacheTest');
-            return [
-                'success' => false,
-                'error' => $e->getMessage()
-            ];
-        }
-    }
+    //         return [
+    //             'success' => true,
+    //             'cacheData' => $data,
+    //             'sessionSet' => true
+    //         ];
+    //     } catch (Exception $e) {
+    //         Yii::log("Error in performCacheTest: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.site.helper.performCacheTest');
+    //         return [
+    //             'success' => false,
+    //             'error' => $e->getMessage()
+    //         ];
+    //     }
+    // }
 
     /**
      * Gets the default redirect URL for authenticated users

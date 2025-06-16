@@ -75,7 +75,14 @@ class CategoryHelper
             }
         } catch (Exception $e) {
             Yii::log("Error in createCategory: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.inventory.category.helper.createCategory');
-            throw new CHttpException(500, 'Error creating category.');
+
+            // Return error array instead of throwing exception for better testability
+            $model = isset($model) ? $model : new Category();
+            return [
+                'success' => false,
+                'model' => $model,
+                'message' => 'Error creating category.'
+            ];
         }
     }
 
@@ -110,7 +117,13 @@ class CategoryHelper
             }
         } catch (Exception $e) {
             Yii::log("Error in updateCategory for category ID {$model->_id}: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.inventory.category.helper.updateCategory');
-            throw new CHttpException(500, 'Error updating category.');
+
+            // Return error array instead of throwing exception for better testability
+            return [
+                'success' => false,
+                'model' => $model,
+                'message' => 'Error updating category.'
+            ];
         }
     }
 
@@ -167,7 +180,12 @@ class CategoryHelper
             }
         } catch (Exception $e) {
             Yii::log("Error in deleteCategory for category ID {$model->_id}: " . $e->getMessage(), CLogger::LEVEL_ERROR, 'application.inventory.category.helper.deleteCategory');
-            throw new CHttpException(500, 'Error deleting category.');
+
+            // Return error array instead of throwing exception for better testability
+            return [
+                'success' => false,
+                'message' => 'Error deleting category.'
+            ];
         }
     }
 

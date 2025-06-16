@@ -1,330 +1,687 @@
 <?php
 
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
-use MongoDB\BSON\ObjectId;
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 
-// require_once (__DIR__ . '/../../../../../vendor/autoload.php');
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery as m;
+use MongoDB\BSON\ObjectId;
 
 class ProductHelperTest extends MockeryTestCase
 {
-    private $yiiAppMock;
+    private $yiiMock;
+    private $appMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        parent::setUp();
-        $this->yiiAppMock = new YiiAppMock();
+        $this->yiiMock = new YiiAppMock();
+        $this->appMock = $this->yiiMock->mockApp();
     }
 
-    public function testLoadProductById_Success()
+    protected function tearDown(): void
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
-
-        // Test logic flow
-        try {
-            $validId = '507f1f77bcf86cd799439011';
-            $result = ProductHelper::loadProductById($validId);
-
-            // If it somehow works, verify the result
-            $this->assertInstanceOf('Product', $result);
-        } catch (Exception $e) {
-            // Expected behavior when Product class is not properly available
-            $this->assertNotNull($e->getMessage());
-        }
+        $this->yiiMock->close();
+        parent::tearDown();
+        m::close();
     }
 
-    public function testLoadProductById_InvalidIdFormat()
+    public function testLoadProductById_Valid_ReturnsProduct()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $mockProduct = (object)[
+            'name' => 'Test Product'
+        ];
 
+        $productModelMock = m::mock('alias:Product');
+        $productModelMock->shouldReceive('model')->andReturnSelf();
+        $productModelMock->shouldReceive('findByPk')
+            ->with(m::type(ObjectId::class))
+            ->andReturn($mockProduct);
+
+        $result = ProductHelper::loadProductById('507f1f77bcf86cd799439011');
+
+        $this->assertEquals('Test Product', $result->name);
+    }
+
+    public function testLoadProductById_InvalidId_Throws400()
+    {
         try {
-            ProductHelper::loadProductById('invalid-id');
-            $this->fail('Should have thrown an exception for invalid ID format');
+            ProductHelper::loadProductById('invalid_id');
+            $this->fail('Expected CHttpException not thrown.');
         } catch (CHttpException $e) {
             $this->assertEquals(400, $e->statusCode);
             $this->assertEquals('Invalid Product ID format.', $e->getMessage());
-        } catch (Exception $e) {
-            // Alternative exception due to missing classes
-            $this->assertNotNull($e->getMessage());
         }
     }
 
-    public function testLoadProductById_ProductNotFound()
+    public function testLoadProductById_NotFound_Throws404()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $productModelMock = m::mock('alias:Product');
+        $productModelMock->shouldReceive('model')->andReturnSelf();
+        $productModelMock->shouldReceive('findByPk')->andReturn(null);
 
         try {
-            $validId = '507f1f77bcf86cd799439011';
-            $result = ProductHelper::loadProductById($validId);
-
-            // If no exception was thrown, the test environment doesn't have proper Product class
-            $this->fail('Expected exception when product not found');
+            ProductHelper::loadProductById('507f1f77bcf86cd799439011');
+            $this->fail('Expected CHttpException not thrown.');
         } catch (CHttpException $e) {
-            // Expected: Product not found
-            $this->assertTrue(in_array($e->statusCode, [404, 400, 500]));
-        } catch (Exception $e) {
-            // Expected behavior when classes are not available
-            $this->assertNotNull($e->getMessage());
+            $this->assertEquals(404, $e->statusCode);
+            $this->assertEquals('The requested product does not exist.', $e->getMessage());
         }
     }
 
-    public function testProcessImageUpload_NoFile()
+    public function testLoadProductById_InternalException_Throws500()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $productModelMock = m::mock('alias:Product');
+        $productModelMock->shouldReceive('model')->andReturnSelf();
+        $productModelMock->shouldReceive('findByPk')->andThrow(new Exception("DB error"));
 
         try {
-            $result = ProductHelper::processImageUpload(null);
-
-            $this->assertIsArray($result);
-            $this->assertFalse($result['success']);
-            $this->assertNull($result['imageUrl']);
-            $this->assertNull($result['s3Key']);
-        } catch (Exception $e) {
-            // Expected if dependencies are not available
-            $this->assertNotNull($e->getMessage());
+            ProductHelper::loadProductById('507f1f77bcf86cd799439011');
+            $this->fail('Expected CHttpException not thrown.');
+        } catch (CHttpException $e) {
+            $this->assertEquals(500, $e->statusCode);
+            $this->assertEquals('Error retrieving product data.', $e->getMessage());
         }
     }
 
-    public function testProcessImageUpload_Success()
+
+    public function testProcessImageUploadNoFile()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
-
-        try {
-            // Test will likely fail due to missing dependencies
-            $mockUploadedFile = $this->createMockUploadedFile();
-            $result = ProductHelper::processImageUpload($mockUploadedFile);
-
-            // If it works, verify structure
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('success', $result);
-        } catch (Exception $e) {
-            // Expected behavior when dependencies are not available
-            $this->assertNotNull($e->getMessage());
-        }
+        $result = ProductHelper::processImageUpload(null);
+        $this->assertFalse($result['success']);
+        $this->assertNull($result['imageUrl']);
+        $this->assertNull($result['s3Key']);
     }
 
-    public function testCreateProduct_Success()
+    public function testProcessImageUpload_S3UploadSuccess_ReturnsSuccess()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        // Fake file object
+        $uploadedFile = (object)[
+            'name' => 'test-image.png',
+            'tempName' => '/tmp/php123.tmp'
+        ];
 
-        try {
-            $productData = ['name' => 'Test Product', 'price' => 99.99];
-            $result = ProductHelper::createProduct($productData);
+        // Stub UtilityHelpers::sanitizie to return sanitized name
+        $utilityMock = m::mock('alias:UtilityHelpers');
+        $utilityMock->shouldReceive('sanitizie')->with('test-image.png')->andReturn('test-image.png');
 
-            // If it works, verify structure
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('success', $result);
-        } catch (Exception $e) {
-            // Expected behavior when Product class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        // Mock s3uploader component
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('uploadFile')
+            ->with('/tmp/php123.tmp', m::type('string'))
+            ->andReturn('https://bucket.s3.amazonaws.com/products/123_test-image.png');
+
+
+        $result = ProductHelper::processImageUpload($uploadedFile);
+
+        $this->assertTrue($result['success']);
+        $this->assertNotNull($result['imageUrl']);
+        $this->assertStringStartsWith('products/', $result['s3Key']);
     }
 
-    public function testCreateProduct_WithImageUpload()
+    public function testProcessImageUpload_S3UploadFails_ReturnsFailure()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $uploadedFile = (object)[
+            'name' => 'test.png',
+            'tempName' => '/tmp/test123.tmp'
+        ];
 
-        try {
-            $productData = ['name' => 'Test Product', 'price' => 99.99];
-            $mockUploadedFile = $this->createMockUploadedFile();
-            $result = ProductHelper::createProduct($productData, $mockUploadedFile);
+        // Stub UtilityHelpers::sanitizie
+        $utilityMock = m::mock('alias:UtilityHelpers');
+        $utilityMock->shouldReceive('sanitizie')->with('test.png')->andReturn('test.png');
 
-            // If it works, verify structure
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('success', $result);
-        } catch (Exception $e) {
-            // Expected behavior when dependencies are not available
-            $this->assertNotNull($e->getMessage());
-        }
+        // Mock s3uploader to return false
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+
+        $s3uploader->shouldReceive('uploadFile')
+            ->with('/tmp/test123.tmp', m::type('string'))
+            ->andReturn(false);
+
+
+        $result = ProductHelper::processImageUpload($uploadedFile);
+
+        $this->assertFalse($result['success']);
+        $this->assertArrayHasKey('error', $result);
     }
 
-    public function testCreateProduct_ValidationFailed()
+    public function testProcessImageUpload_ExceptionThrown_ReturnsFailure()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $uploadedFile = (object)[
+            'name' => 'error.png',
+            'tempName' => '/tmp/error.tmp'
+        ];
 
-        try {
-            $productData = ['name' => '', 'price' => -1]; // Invalid data
-            $result = ProductHelper::createProduct($productData);
+        // Stub UtilityHelpers::sanitizie
+        $utilityMock = m::mock('alias:UtilityHelpers');
+        $utilityMock->shouldReceive('sanitizie')->with('error.png')->andReturn('error.png');
 
-            // If it works, should indicate failure
-            if (is_array($result)) {
-                $this->assertFalse($result['success']);
-            }
-        } catch (Exception $e) {
-            // Expected behavior when Product class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        // Throw exception from uploadFile
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('uploadFile')
+            ->andThrow(new Exception("S3 connection error"));
+
+
+        $result = ProductHelper::processImageUpload($uploadedFile);
+
+        $this->assertFalse($result['success']);
+        $this->assertArrayHasKey('error', $result);
+        $this->assertEquals('Error processing image upload.', $result['error']);
     }
 
-    public function testUpdateProduct_Success()
+    public function testCreateProduct_WithImageUpload_Success()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $uploadedFile = (object)[
+            'name' => 'test-image.png',
+            'tempName' => '/tmp/php123.tmp'
+        ];
 
-        try {
-            $mockProduct = $this->createMockProduct();
-            $updateData = ['name' => 'Updated Product', 'price' => 149.99];
-            $result = ProductHelper::updateProduct($mockProduct, $updateData);
+        // Mock UtilityHelpers::sanitizie for processImageUpload
+        $utilityMock = m::mock('alias:UtilityHelpers');
+        $utilityMock->shouldReceive('sanitizie')->with('test-image.png')->andReturn('test-image.png');
 
-            // If it works, verify structure
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('success', $result);
-        } catch (Exception $e) {
-            // Expected behavior when dependencies are not available
-            $this->assertNotNull($e->getMessage());
-        }
+        // Mock S3 uploader
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('uploadFile')
+            ->with('/tmp/php123.tmp', m::type('string'))
+            ->andReturn('https://bucket.s3.amazonaws.com/products/123_test-image.png');
+        $s3uploader->shouldReceive('fileExists')->andReturn(false);
+
+
+        $stockLogMock = m::mock('overload:StockLog');
+        $stockLogMock->shouldReceive('add')->once();
+
+        $productMock = m::mock('overload:Product');
+        $productMock->shouldReceive('validate')->andReturn(true);
+        $productMock->shouldReceive('save')->with(false)->andReturn(true);
+        $productMock->shouldReceive('addError')->never();
+
+        // Here we store attributes in the mock manually
+        $capturedAttributes = [];
+
+        $productMock->shouldReceive('setAttributes')
+            ->with(m::on(function ($attrs) use (&$capturedAttributes) {
+                $capturedAttributes = $attrs;
+                return true;
+            }))
+            ->andReturnNull();
+
+        // Allow reading captured fields like real object
+        $productMock->shouldReceive('__get')
+            ->with(m::any())
+            ->andReturnUsing(function ($key) use (&$capturedAttributes) {
+                return $capturedAttributes[$key] ?? null;
+            });
+
+        $productMock->shouldReceive('__set')
+            ->with(m::any(), m::any())
+            ->andReturnUsing(function ($key, $value) use (&$capturedAttributes) {
+                $capturedAttributes[$key] = $value;
+            });
+
+        // Simulate _id and image_url post-processing
+        $productMock->_id = new MongoDB\BSON\ObjectId();
+        $productMock->image_url = 'https://bucket.s3.amazonaws.com/products/123_test-image.png';
+
+        // Mock user state for stock logging
+        $userMock = $this->yiiMock->mockAppComponent('user');
+        $userMock->shouldReceive('getState')->with('username')->andReturn('testuser');
+
+        $data = [
+            'name' => 'Test Product',
+            'price' => 99,
+        ];
+
+        // Call the real static method
+        $result = ProductHelper::createProduct($data, $uploadedFile);
+
+        $this->assertTrue($result['success']);
+        // $this->assertEquals('Test Product', $result['model']->name);
+        $this->assertEquals('Product created successfully.', $result['message']);
+        $this->assertNotNull($result['s3Key']);
     }
 
-    public function testDeleteProduct_Success()
+
+    public function testCreateProduct_NoImage_ValidationFails()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $this->yiiMock->mockAppComponent('s3uploader')
+            ->shouldReceive('fileExists')->never();
+        $this->yiiMock->mockAppComponent('s3uploader')
+            ->shouldReceive('deleteFile')->never();
 
-        try {
-            $mockProduct = $this->createMockProduct();
-            $result = ProductHelper::deleteProduct($mockProduct);
+        $productMock = m::mock('overload:Product');
+        $productMock->shouldReceive('validate')->andReturn(false);
+        $productMock->shouldReceive('getErrors')->andReturn(['name' => ['Missing']]);
 
-            // If it works, verify structure
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('success', $result);
-        } catch (Exception $e) {
-            // Expected behavior when dependencies are not available
-            $this->assertNotNull($e->getMessage());
-        }
+        $data = ['name' => '', 'price' => 10];
+        $result = ProductHelper::createProduct($data);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Error creating product. Please check the form for errors.', $result['message']);
+    }
+
+    public function testCreateProduct_NoImage_SaveFails()
+    {
+        $this->yiiMock->mockAppComponent('s3uploader')
+            ->shouldReceive('fileExists')->never();
+        $this->yiiMock->mockAppComponent('s3uploader')
+            ->shouldReceive('deleteFile')->never();
+
+        $productMock = m::mock('overload:Product');
+        $productMock->shouldReceive('validate')->andReturn(true);
+        $productMock->shouldReceive('save')->with(false)->andReturn(false);
+        $productMock->shouldReceive('getErrors')->andReturn(['db' => ['Failed']]);
+
+        $data = ['name' => 'Hello', 'price' => 10];
+        $result = ProductHelper::createProduct($data);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Error creating product. Please check the form for errors.', $result['message']);
+    }
+
+    public function testCreateProduct_ExceptionThrown()
+    {
+        $this->expectException(CHttpException::class);
+        $this->expectExceptionMessage('Error creating product.');
+
+        m::mock('overload:Product')->shouldReceive('__construct')
+            ->andThrow(new Exception('Something went wrong'));
+
+        ProductHelper::createProduct(['name' => 'Fail']);
+    }
+
+    public function testDeleteProduct_SuccessWithImageCleanup()
+    {
+        $productMock = m::mock('Product');
+        $productMock->_id = '123';
+        $productMock->name = 'Test Product';
+        $productMock->image_url = 'https://s3.amazonaws.com/bucket/image.jpg';
+        $productMock->shouldReceive('delete')->once()->andReturn(true);
+
+        $s3Mock = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3Mock->shouldReceive('getS3KeyFromUrl')->with('https://s3.amazonaws.com/bucket/image.jpg')->andReturn('image.jpg');
+        $s3Mock->shouldReceive('fileExists')->with('image.jpg')->andReturn(true);
+        $s3Mock->shouldReceive('deleteFile')->with('image.jpg')->once();
+
+        $result = ProductHelper::deleteProduct($productMock);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Product deleted successfully.', $result['message']);
+    }
+
+    public function testDeleteProduct_SuccessImageNotExists()
+    {
+        $productMock = m::mock('Product');
+        $productMock->_id = '124';
+        $productMock->name = 'NoImage Product';
+        $productMock->image_url = 'https://s3.amazonaws.com/bucket/missing.jpg';
+        $productMock->shouldReceive('delete')->once()->andReturn(true);
+
+        $s3Mock = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3Mock->shouldReceive('getS3KeyFromUrl')->with('https://s3.amazonaws.com/bucket/missing.jpg')->andReturn('missing.jpg');
+        $s3Mock->shouldReceive('fileExists')->with('missing.jpg')->andReturn(false);
+        $s3Mock->shouldReceive('deleteFile')->never();
+
+        $result = ProductHelper::deleteProduct($productMock);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Product deleted successfully.', $result['message']);
+    }
+
+
+    public function testDeleteProduct_ThrowsException()
+    {
+        $productMock = m::mock('Product');
+        $productMock->_id = '126';
+        $productMock->name = 'Boom Product';
+        $productMock->image_url = 'https://s3.amazonaws.com/bucket/crash.jpg';
+
+        $s3Mock = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3Mock->shouldReceive('getS3KeyFromUrl')->andThrow(new Exception('Crash!'));
+
+        $this->expectException(CHttpException::class);
+        $this->expectExceptionMessage('Error deleting product.');
+
+        ProductHelper::deleteProduct($productMock);
     }
 
     public function testPrepareProductSearch_WithoutSearchData()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        // Mock Product class to return our mock instance
+        $productMock = m::mock('overload:Product');
+        $productMock->shouldReceive('unsetAttributes')->once();
+        $productMock->shouldReceive('__construct')->with('search')->once()->andReturn($productMock);
 
-        try {
-            $result = ProductHelper::prepareProductSearch();
+        $result = ProductHelper::prepareProductSearch();
 
-            // If it works, should return a Product instance
-            $this->assertInstanceOf('Product', $result);
-        } catch (Exception $e) {
-            // Expected behavior when Product class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        $this->assertInstanceOf('Product', $result);
     }
 
     public function testPrepareProductSearch_WithSearchData()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $searchData = ['name' => 'Sample Product'];
 
-        try {
-            $searchData = ['name' => 'test', 'category_id' => '123'];
-            $result = ProductHelper::prepareProductSearch($searchData);
+        // Create a fresh mock for this test
+        $productMock = m::mock('overload:Product');
+        $productMock->shouldReceive('unsetAttributes')->once();
+        // $productMock->shouldReceive('__set')->with('attributes', $searchData)->once();
+        $productMock->shouldReceive('__construct')->with('search')->once()->andReturn($productMock);
 
-            // If it works, should return a Product instance
-            $this->assertInstanceOf('Product', $result);
-        } catch (Exception $e) {
-            // Expected behavior when Product class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        $result = ProductHelper::prepareProductSearch($searchData);
+
+        $this->assertInstanceOf('Product', $result);
     }
 
-    public function testGetCategoryOptions()
+    public function testPrepareProductSearch_ThrowsException()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $this->expectException(CHttpException::class);
+        $this->expectExceptionMessage('Error preparing product search.');
 
-        try {
-            $result = ProductHelper::getCategoryOptions();
+        // Mock Product class constructor to throw exception
+        $productClassMock = m::mock('overload:Product');
+        $productClassMock->shouldReceive('__construct')->with('search')->andThrow(new Exception("Simulated constructor failure"));
 
-            // If it works, should return an array
-            $this->assertIsArray($result);
-        } catch (Exception $e) {
-            // Expected behavior when Category class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        ProductHelper::prepareProductSearch(['name' => 'Error']);
     }
 
-    public function testGetProductImageUrl_WithImage()
+
+    public function testGetCategoryOptionsSuccess()
     {
-        try {
-            $mockProduct = $this->createMockProduct();
-            $mockProduct->image_url = 'https://example.com/image.jpg';
+        // Mock Category::model() to return a mock that has getCategoryOptions
+        $categoryModelMock = m::mock();
+        $categoryModelMock->shouldReceive('getCategoryOptions')->andReturn(['1' => 'Category 1', '2' => 'Category 2']);
 
-            $result = ProductHelper::getProductImageUrl($mockProduct);
-            $this->assertEquals('https://example.com/image.jpg', $result);
-        } catch (Exception $e) {
-            // Expected if Product class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        $categoryClassMock = m::mock('alias:Category');
+        $categoryClassMock->shouldReceive('model')->andReturn($categoryModelMock);
+
+        $result = ProductHelper::getCategoryOptions();
+        $this->assertEquals(['1' => 'Category 1', '2' => 'Category 2'], $result);
     }
 
-    public function testGetProductImageUrl_WithoutImage()
+    public function testGetCategoryOptionsException()
     {
-        try {
-            $mockProduct = $this->createMockProduct();
-            $mockProduct->image_url = null;
+        // Mock Category model to throw exception
+        $category = m::mock('alias:Category');
+        $category->shouldReceive('getCategoryOptions')->andThrow(new Exception('Database error'));
 
-            $result = ProductHelper::getProductImageUrl($mockProduct);
-            $this->assertNull($result);
-        } catch (Exception $e) {
-            // Expected if Product class is not available
-            $this->assertNotNull($e->getMessage());
-        }
+        // Mock Category::model() static call
+        $categoryClass = m::mock('alias:Category');
+        $categoryClass->shouldReceive('model')->andReturn($category);
+
+        $result = ProductHelper::getCategoryOptions();
+        $this->assertEquals([], $result);
     }
 
-    public function testHandleAjaxResponse_IsAjax()
+    public function testGetProductImageUrlWithImage()
     {
-        // Mock the Yii application
-        $this->yiiAppMock->mockApp();
+        $model = m::mock('Product');
+        $model->image_url = 'http://example.com/image.jpg';
 
-        try {
-            $result = ['success' => true, 'message' => 'Success'];
-
-            // This test will likely fail due to missing CJSON class and Yii framework
-            ProductHelper::handleAjaxResponse($result, true);
-
-            // If we reach here, something worked
-            $this->assertTrue(true);
-        } catch (Exception $e) {
-            // Expected behavior when framework classes are not available
-            $this->assertNotNull($e->getMessage());
-        }
+        $result = ProductHelper::getProductImageUrl($model);
+        $this->assertEquals('http://example.com/image.jpg', $result);
     }
 
-    private function createMockUploadedFile()
+    public function testGetProductImageUrlWithoutImage()
     {
-        // Create a simple mock object
-        $mock = new stdClass();
-        $mock->name = 'test-image.jpg';
-        $mock->tempName = '/tmp/uploaded-file';
-        return $mock;
+        $model = m::mock('Product');
+        $model->image_url = null;
+
+        $result = ProductHelper::getProductImageUrl($model);
+        $this->assertNull($result);
     }
 
-    private function createMockProduct()
+    public function testHandleAjaxResponse()
     {
-        // Create a simple mock object
-        $mock = new stdClass();
-        if (class_exists('MongoDB\BSON\ObjectId')) {
-            $mock->_id = new ObjectId();
-        } else {
-            $mock->_id = '507f1f77bcf86cd799439011';
-        }
-        $mock->name = 'Test Product';
-        $mock->image_url = 'test-image.jpg';
-        $mock->quantity = 10;
-        return $mock;
+        $result = [
+            'success' => true,
+            'message' => 'Test message'
+        ];
+
+        // Mock CJSON
+        $cjson = m::mock('alias:CJSON');
+        $cjson->shouldReceive('encode')->with([
+            'status' => 'success',
+            'message' => 'Test message'
+        ])->andReturn('{"status":"success","message":"Test message"}');
+
+        // Capture output
+        ob_start();
+        ProductHelper::handleAjaxResponse($result, true);
+        $output = ob_get_clean();
+
+        $this->assertEquals('{"status":"success","message":"Test message"}', $output);
     }
 
-    public function tearDown(): void
+    public function testHandleAjaxResponseNotAjax()
     {
-        $this->yiiAppMock->close();
-        Mockery::close();
-        parent::tearDown();
+        $result = [
+            'success' => true,
+            'message' => 'Test message'
+        ];
+
+        // Should not produce any output when not AJAX
+        ob_start();
+        ProductHelper::handleAjaxResponse($result, false);
+        $output = ob_get_clean();
+
+        $this->assertEquals('', $output);
     }
+
+    public function testUpdateProduct_WithImageUpload_Success()
+    {
+        $uploadedFile = (object)[
+            'name' => 'new-image.png',
+            'tempName' => '/tmp/newphp123.tmp'
+        ];
+
+        // Mock existing product
+        $productMock = m::mock('Product')->makePartial();
+        $productMock->_id = new ObjectId('507f1f77bcf86cd799439011');
+        $productMock->name = 'Existing Product';
+        $productMock->image_url = 'https://bucket.s3.amazonaws.com/products/old_image.jpg';
+        $productMock->shouldReceive('validate')->andReturn(true);
+        $productMock->shouldReceive('save')->with(false)->andReturn(true);
+
+        // Mock UtilityHelpers
+        $utilityMock = m::mock('alias:UtilityHelpers');
+        $utilityMock->shouldReceive('sanitizie')->with('new-image.png')->andReturn('new-image.png');
+
+        // Mock S3 uploader
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('getS3KeyFromUrl')->with('https://bucket.s3.amazonaws.com/products/old_image.jpg')->andReturn('products/old_image.jpg');
+        $s3uploader->shouldReceive('uploadFile')->andReturn('https://bucket.s3.amazonaws.com/products/123_new-image.png');
+        $s3uploader->shouldReceive('fileExists')->with('products/old_image.jpg')->andReturn(true);
+        $s3uploader->shouldReceive('deleteFile')->with('products/old_image.jpg')->once();
+
+        // Mock StockLog
+        $stockLogMock = m::mock('overload:StockLog');
+        $stockLogMock->shouldReceive('add')->once();
+
+        // Mock user state
+        $userMock = $this->yiiMock->mockAppComponent('user');
+        $userMock->shouldReceive('getState')->with('username')->andReturn('testuser');
+
+        $data = ['name' => 'Updated Product', 'price' => 199];
+
+        $result = ProductHelper::updateProduct($productMock, $data, $uploadedFile);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Product updated successfully.', $result['message']);
+    }
+
+    public function testUpdateProduct_ClearImage_Success()
+    {
+        // Mock existing product with image
+        $productMock = m::mock('Product')->makePartial();
+        $productMock->_id = new ObjectId('507f1f77bcf86cd799439011');
+        $productMock->name = 'Product with Image';
+        $productMock->image_url = 'https://bucket.s3.amazonaws.com/products/image.jpg';
+        $productMock->shouldReceive('validate')->andReturn(true);
+        $productMock->shouldReceive('save')->with(false)->andReturn(true);
+
+        // Mock S3 uploader - only expect deleteFile to be called once (during clearImage)
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('getS3KeyFromUrl')->with('https://bucket.s3.amazonaws.com/products/image.jpg')->andReturn('products/image.jpg');
+        $s3uploader->shouldReceive('fileExists')->with('products/image.jpg')->andReturn(true);
+        $s3uploader->shouldReceive('deleteFile')->with('products/image.jpg')->twice();
+
+        // Mock StockLog
+        $stockLogMock = m::mock('overload:StockLog');
+        $stockLogMock->shouldReceive('add')->once();
+
+        // Mock user state
+        $userMock = $this->yiiMock->mockAppComponent('user');
+        $userMock->shouldReceive('getState')->with('username')->andReturn('testuser');
+
+        $data = ['name' => 'Updated Product', 'price' => 199];
+
+        $result = ProductHelper::updateProduct($productMock, $data, null, true);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Product updated successfully.', $result['message']);
+        $this->assertNull($productMock->image_url);
+    }
+
+    public function testUpdateProduct_ValidationFails()
+    {
+        $productMock = m::mock('Product')->makePartial();
+        $productMock->_id = new ObjectId('507f1f77bcf86cd799439011');
+        $productMock->image_url = 'https://bucket.s3.amazonaws.com/products/old.jpg';
+        $productMock->shouldReceive('validate')->andReturn(false);
+        $productMock->shouldReceive('getErrors')->andReturn(['name' => ['Name is required']]);
+
+        // Mock S3 uploader
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('getS3KeyFromUrl')->andReturn('products/old.jpg');
+
+        $data = ['name' => '', 'price' => 199];
+
+        $result = ProductHelper::updateProduct($productMock, $data);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Error updating product. Please check the form for errors.', $result['message']);
+    }
+
+    public function testUpdateProduct_ExceptionThrown()
+    {
+        $productMock = m::mock('Product')->makePartial();
+        $productMock->_id = new ObjectId('507f1f77bcf86cd799439011');
+
+        // Mock S3 uploader to throw exception
+        $s3uploader = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3uploader->shouldReceive('getS3KeyFromUrl')->andThrow(new Exception('S3 error'));
+
+        $this->expectException(CHttpException::class);
+        $this->expectExceptionMessage('Error updating product.');
+
+        ProductHelper::updateProduct($productMock, ['name' => 'Test']);
+    }
+
+    public function testDeleteProduct_SuccessNoImage()
+    {
+        $productMock = m::mock('Product');
+        $productMock->_id = '125';
+        $productMock->name = 'No Image Product';
+        $productMock->image_url = null;
+        $productMock->shouldReceive('delete')->once()->andReturn(true);
+
+        $s3Mock = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3Mock->shouldReceive('getS3KeyFromUrl')->with(null)->andReturn(null);
+        $s3Mock->shouldReceive('fileExists')->never();
+        $s3Mock->shouldReceive('deleteFile')->never();
+
+        $result = ProductHelper::deleteProduct($productMock);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Product deleted successfully.', $result['message']);
+    }
+
+    public function testDeleteProduct_DeleteFails()
+    {
+        $productMock = m::mock('Product');
+        $productMock->_id = '127';
+        $productMock->name = 'Failed Delete Product';
+        $productMock->image_url = null;
+        $productMock->shouldReceive('delete')->once()->andReturn(false);
+        $productMock->shouldReceive('hasErrors')->andReturn(false);
+
+        $s3Mock = $this->yiiMock->mockAppComponent('s3uploader');
+        $s3Mock->shouldReceive('getS3KeyFromUrl')->with(null)->andReturn(null);
+
+        $result = ProductHelper::deleteProduct($productMock);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Error deleting product from database.', $result['message']);
+    }
+
+    public function testCreateProduct_WithVariants_StockLog()
+    {
+        // Mock StockLog to verify it's called with variants
+        $stockLogMock = m::mock('overload:StockLog');
+        $stockLogMock->shouldReceive('add')->once();
+
+        $productMock = m::mock('overload:Product');
+        $productMock->shouldReceive('validate')->andReturn(true);
+        $productMock->shouldReceive('save')->with(false)->andReturn(true);
+
+        // Mock product with variants
+        $variant1 = (object)['quantity' => 5];
+        $variant2 = (object)['quantity' => 3];
+        $productMock->quantity = 10;
+        $productMock->variants = [$variant1, $variant2];
+        $productMock->name = 'Product with Variants';
+        $productMock->_id = new ObjectId();
+
+        // Mock user state
+        $userMock = $this->yiiMock->mockAppComponent('user');
+        $userMock->shouldReceive('getState')->with('username')->andReturn('testuser');
+
+        $data = ['name' => 'Product with Variants', 'price' => 99, 'quantity' => 10];
+
+        $result = ProductHelper::createProduct($data);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testRecordStockLog_NoQuantity()
+    {
+        // Mock StockLog to verify it's NOT called when quantity is 0
+        $stockLogMock = m::mock('overload:StockLog');
+        $stockLogMock->shouldReceive('add')->never();
+
+        $productMock = m::mock('Product');
+        $productMock->_id = new ObjectId();
+        $productMock->name = 'No Stock Product';
+        $productMock->quantity = 0;
+        $productMock->variants = [];
+
+        // This should not throw any exceptions
+        ProductHelper::recordStockLog($productMock, 'create');
+
+        $this->assertTrue(true); // Test passes if no exception thrown
+    }
+
+    public function testRecordStockLog_Exception()
+    {
+        // Mock StockLog to throw exception on add, but keep class constants
+        $stockLogMock = m::mock('StockLog')->makePartial();
+        $stockLogMock->shouldReceive('add')->andThrow(new Exception('Stock log error'));
+
+        $productMock = m::mock('Product');
+        $productMock->_id = new ObjectId();
+        $productMock->name = 'Error Product';
+        $productMock->quantity = 5;
+        $productMock->variants = [];
+
+        // Mock user state
+        $userMock = $this->yiiMock->mockAppComponent('user');
+        $userMock->shouldReceive('getState')->with('username')->andReturn('testuser');
+
+        // Should not throw exception
+        ProductHelper::recordStockLog($productMock, 'create');
+
+        $this->assertTrue(true);
+    }
+
+
 }

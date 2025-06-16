@@ -24,10 +24,10 @@ return array(
         'inventory' => array(
             // 'defaultController' => 'product',
         ),
-        'user' => array(
-            'class' => 'application.components.WebUser',
-            'defaultController' => 'manage',
-        ),
+        // 'user' => array(
+        //     'class' => 'application.components.WebUser',
+        //     'defaultController' => 'manage',
+        // ),
         'report' => array(
             'defaultController' => 'default',
         ),
@@ -157,7 +157,7 @@ return array(
 
                 // array(
                 //     'class' => 'application.components.GmailLogRoute',
-                //     'levels' => 'error, warning, info',
+                //     'levels' => 'error',
                 //     'emails' => 'karthikarvapalli01@gmail.com',
                 // )
             ),

@@ -63,7 +63,7 @@ class ProductController extends InventoryBaseController
 
                 if ($result['success']) {
                     Yii::app()->user->setFlash('success', $result['message']);
-                    $this->redirect(array('view', 'id' => (string)$model->_id));
+                    $this->redirect(array('k', 'id' => (string)$model->_id));
                 } else {
                     Yii::app()->user->setFlash('error', $result['message']);
                 }

@@ -2,12 +2,6 @@
 
 use MongoDB\BSON\ObjectId;
 
-/**
- * ProductHelper - Business logic helper for Product operations
- *
- * This helper class extracts core business logic from ProductController
- * to improve testability, maintainability, and reusability across controllers.
- */
 class ProductHelper
 {
     /**

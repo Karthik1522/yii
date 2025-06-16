@@ -51,6 +51,219 @@
         </style>
     </head>
     <body>
+        <h2>Category</h2>
+        <ul>
+            <li class="success">Get collection name</li>
+            <li class="success">Rules</li>
+            <li class="success">Attribute labels</li>
+            <li class="success">Static model method</li>
+            <li class="success">Exist in parent validation</li>
+            <li class="success">Before save</li>
+            <li class="success">Generate slug</li>
+            <li class="success">Search provider</li>
+            <li class="success">Get parent name</li>
+            <li class="defect">Get category options</li>
+        </ul>
+        <h2>Category Helper</h2>
+        <ul>
+            <li class="success">LoadCategoryById ValidId ExistingCategory</li>
+            <li class="success">LoadCategoryById ValidId NonExistingCategory</li>
+            <li class="success">LoadCategoryById InvalidIdFormat</li>
+            <li class="success">LoadCategoryById DatabaseException</li>
+            <li class="defect">CreateCategory ValidData SuccessfulSave</li>
+            <li class="success">CreateCategory ValidationErrors</li>
+            <li class="success">CreateCategory ExceptionDuringCreation</li>
+            <li class="success">UpdateCategory ValidData SuccessfulSave</li>
+            <li class="success">UpdateCategory ValidationErrors</li>
+            <li class="success">UpdateCategory ExceptionDuringUpdate</li>
+            <li class="success">DeleteCategory SuccessfulDeletion</li>
+            <li class="success">DeleteCategory WithAssociatedProducts</li>
+            <li class="success">DeleteCategory WithChildCategories</li>
+            <li class="success">DeleteCategory DeletionFails</li>
+            <li class="success">DeleteCategory ExceptionDuringDeletion</li>
+            <li class="success">PrepareCategorySearch WithoutSearchData</li>
+            <li class="success">PrepareCategorySearch WithSearchData</li>
+            <li class="success">PrepareCategorySearch Exception</li>
+            <li class="success">GetParentCategoryOptions WithoutExcludeId</li>
+            <li class="success">GetParentCategoryOptions WithExcludeId</li>
+            <li class="success">GetParentCategoryOptions Exception</li>
+            <li class="success">HandleAjaxResponse SuccessfulResult AjaxRequest</li>
+            <li class="success">HandleAjaxResponse NonAjaxRequest</li>
+        </ul>
+        <h2>Dashboard Helper</h2>
+        <ul>
+            <li class="success">GetDashboardData Success</li>
+            <li class="success">GetDashboardData StockHelperException</li>
+            <li class="success">GetDashboardData CategoryException</li>
+            <li class="success">GetDashboardData RecentMovementsException</li>
+            <li class="success">GetDashboardData ProductException</li>
+            <li class="success">GetLowStockProducts Success</li>
+            <li class="success">GetLowStockProducts DefaultParameters</li>
+            <li class="success">GetLowStockProducts Exception</li>
+            <li class="success">GetLowStockProducts NoProductsFound</li>
+            <li class="success">GetRecentProductActivities Success</li>
+            <li class="success">GetRecentProductActivities DefaultParameter</li>
+            <li class="success">GetRecentProductActivities Exception</li>
+            <li class="success">GetRecentProductActivities NoActivitiesFound</li>
+            <li class="success">GetRecentProductActivities CustomLimit</li>
+        </ul>
+        <h2>Dimensions</h2>
+        <ul>
+            <li class="success">Public properties</li>
+            <li class="success">Rules</li>
+            <li class="success">Attribute labels</li>
+            <li class="success">Default values</li>
+            <li class="success">Valid dimensions with valid unit</li>
+            <li class="success">Valid dimensions with different units</li>
+            <li class="success">Invalid unit</li>
+            <li class="success">Required fields validation</li>
+            <li class="success">Negative dimensions validation</li>
+            <li class="success">Zero dimensions validation</li>
+            <li class="success">Floating point dimensions</li>
+            <li class="success">Empty unit uses default</li>
+        </ul>
+        <h2>Product</h2>
+        <ul>
+            <li class="success">Get collection name</li>
+            <li class="success">Static model returns instance</li>
+            <li class="success">Attribute labels</li>
+            <li class="success">Rules</li>
+            <li class="success">Embedded documents</li>
+            <li class="success">Behaviors</li>
+            <li class="success">GetCategoryName WithValidCategoryId</li>
+            <li class="success">GetCategoryName WithInvalidCategoryId</li>
+            <li class="success">GetCategoryName WithEmptyCategoryId</li>
+            <li class="success">BeforeValidate ProcessesTagsInput</li>
+            <li class="success">BeforeValidate HandlesEmptyTagsInput</li>
+            <li class="success">BeforeValidate FiltersEmptyTags</li>
+            <li class="success">ValidateCategoryExists WithValidCategory</li>
+            <li class="success">ValidateCategoryExists WithInvalidCategory</li>
+            <li class="success">ValidateCategoryExists WithInvalidObjectIdFormat</li>
+            <li class="success">SearchProvider ReturnsDataProvider</li>
+            <li class="success">SearchProvider WithNameFilter</li>
+            <li class="success">SearchProvider WithSkuFilter</li>
+            <li class="success">SearchProvider WithCategoryFilter</li>
+            <li class="success">SearchProvider WithQuantityFilter</li>
+            <li class="success">SearchProvider WithPriceFilter</li>
+            <li class="success">SearchProvider WithTagsInputFilter</li>
+            <li class="success">SearchProvider WithTagsArrayFilter</li>
+            <li class="success">SearchProvider WithDescriptionFilter</li>
+            <li class="success">SearchProvider WithCaseSensitiveFlag</li>
+            <li class="success">SearchProvider WithMultipleFilters</li>
+            <li class="success">Default values</li>
+            <li class="success">BeforeSave SetsTimestamps</li>
+        </ul>
+        <h2>Product Helper</h2>
+        <ul>
+            <li class="success">LoadProductById Valid ReturnsProduct</li>
+            <li class="success">LoadProductById InvalidId Throws400</li>
+            <li class="success">LoadProductById NotFound Throws404</li>
+            <li class="success">LoadProductById InternalException Throws500</li>
+            <li class="success">Process image upload no file</li>
+            <li class="success">ProcessImageUpload S3UploadSuccess ReturnsSuccess</li>
+            <li class="success">ProcessImageUpload S3UploadFails ReturnsFailure</li>
+            <li class="success">ProcessImageUpload ExceptionThrown ReturnsFailure</li>
+            <li class="defect">CreateProduct WithImageUpload Success</li>
+            <li class="success">CreateProduct NoImage ValidationFails</li>
+            <li class="success">CreateProduct NoImage SaveFails</li>
+            <li class="success">CreateProduct ExceptionThrown</li>
+            <li class="success">DeleteProduct SuccessWithImageCleanup</li>
+            <li class="success">DeleteProduct SuccessImageNotExists</li>
+            <li class="success">DeleteProduct ThrowsException</li>
+            <li class="success">PrepareProductSearch WithoutSearchData</li>
+            <li class="success">PrepareProductSearch WithSearchData</li>
+            <li class="success">PrepareProductSearch ThrowsException</li>
+            <li class="success">Get category options success</li>
+            <li class="success">Get category options exception</li>
+            <li class="success">Get product image url with image</li>
+            <li class="success">Get product image url without image</li>
+            <li class="success">Handle ajax response</li>
+            <li class="success">Handle ajax response not ajax</li>
+            <li class="success">UpdateProduct WithImageUpload Success</li>
+            <li class="success">UpdateProduct ClearImage Success</li>
+            <li class="success">UpdateProduct ValidationFails</li>
+            <li class="success">UpdateProduct ExceptionThrown</li>
+            <li class="success">DeleteProduct SuccessNoImage</li>
+            <li class="success">DeleteProduct DeleteFails</li>
+            <li class="defect">CreateProduct WithVariants StockLog</li>
+            <li class="success">RecordStockLog NoQuantity</li>
+            <li class="success">RecordStockLog Exception</li>
+        </ul>
+        <h2>Report Helper</h2>
+        <ul>
+            <li class="success">GenerateStockLevelReport CacheMiss Success</li>
+            <li class="success">GenerateStockLevelReport CacheHit Success</li>
+            <li class="success">GenerateStockLevelReport CacheHit WithError</li>
+            <li class="success">GenerateStockLevelReport AggregationFailure</li>
+            <li class="success">GenerateStockLevelReport AggregationException</li>
+            <li class="success">GenerateStockLevelReport OuterException</li>
+            <li class="success">GenerateProductsPerCategoryReport CacheMiss Success</li>
+            <li class="success">GenerateProductsPerCategoryReport CacheHit Success</li>
+            <li class="success">GenerateProductsPerCategoryReport AggregationFailure</li>
+            <li class="success">GenerateProductsPerCategoryReport AggregationException</li>
+            <li class="success">GenerateProductsPerCategoryReport OuterException</li>
+            <li class="success">GeneratePriceRangeReport CacheMiss Success</li>
+            <li class="success">GeneratePriceRangeReport CacheHit Success</li>
+            <li class="success">GeneratePriceRangeReport CacheHit WithError</li>
+            <li class="success">GeneratePriceRangeReport AggregationFailure</li>
+            <li class="success">GeneratePriceRangeReport AggregationException</li>
+            <li class="success">GeneratePriceRangeReport OuterException</li>
+            <li class="success">CreateReportDataProvider DefaultConfig</li>
+            <li class="success">CreateReportDataProvider CustomConfig</li>
+            <li class="success">CreateReportDataProvider EmptyData</li>
+            <li class="success">HandleReportFlashMessages Success</li>
+            <li class="success">HandleReportFlashMessages FailureWithMessage</li>
+            <li class="success">HandleReportFlashMessages FailureWithoutMessage</li>
+        </ul>
+        <h2>S3Uploader</h2>
+        <ul>
+            <li class="success">Upload file success</li>
+            <li class="success">Upload file fails when file not exists</li>
+            <li class="success">Delete file success</li>
+            <li class="success">Delete file handles exception</li>
+            <li class="success">File exists returns true</li>
+            <li class="success">File exists returns false</li>
+            <li class="success">Get s 3 key from url with valid url</li>
+            <li class="success">Get s 3 key from url with invalid url</li>
+            <li class="success">Init</li>
+            <li class="success">Get s 3 client</li>
+            <li class="success">Get region</li>
+            <li class="success">Get key</li>
+            <li class="success">Get secret</li>
+            <li class="success">Upload file when s 3 client not initialized</li>
+            <li class="success">Upload file handles exception</li>
+            <li class="success">Delete file when s 3 client not initialized</li>
+            <li class="success">File exists when s 3 client not initialized</li>
+            <li class="success">Get presigned url success</li>
+            <li class="success">Get presigned url when s 3 client not initialized</li>
+            <li class="success">Get presigned url handles exception</li>
+            <li class="success">Get s 3 key from url with no path</li>
+            <li class="success">Get s 3 key from url with empty path</li>
+        </ul>
+        <h2>Site Helper</h2>
+        <ul>
+            <li class="success">ProcessLogin Success</li>
+            <li class="success">ProcessLogin ValidationFailure</li>
+            <li class="success">ProcessLogin LoginFailure</li>
+            <li class="success">ProcessLogin ExceptionHandling</li>
+            <li class="success">ProcessRegistration Success</li>
+            <li class="success">ProcessRegistration ValidationFailure</li>
+            <li class="success">ProcessRegistration SaveFailure</li>
+            <li class="success">ProcessRegistration ExceptionHandling</li>
+            <li class="success">ProcessLogout Success</li>
+            <li class="success">ProcessLogout ExceptionHandling</li>
+            <li class="success">Get default redirect url</li>
+        </ul>
+        <h2>Stock Helper</h2>
+        <ul>
+            <li class="success">Prepare stock log search without search data</li>
+            <li class="success">Prepare stock log search with search data</li>
+            <li class="success">Prepare stock log search throws exception</li>
+            <li class="success">Get stock statistics success</li>
+            <li class="success">Get stock statistics handles exception</li>
+            <li class="success">Get recent stock movements success</li>
+            <li class="success">Get recent stock movements handles exception</li>
+        </ul>
         <h2>Stock Log</h2>
         <ul>
             <li class="success">Get collection name</li>
@@ -68,15 +281,98 @@
             <li class="success">ValidateUserID WithValidUser</li>
             <li class="success">ValidateUserID WithInvalidUser</li>
             <li class="success">ValidateUserID WithEmptyUserId</li>
-            <li class="defect">Add WithValidData</li>
+            <li class="success">Add WithValidData</li>
             <li class="success">SearchProvider ReturnsDataProvider</li>
+            <li class="success">SearchProvider WithIdFilter</li>
+            <li class="success">SearchProvider WithProductIdFilter</li>
+            <li class="success">SearchProvider WithTypeFilter</li>
+            <li class="success">SearchProvider WithReasonFilter</li>
+            <li class="success">SearchProvider WithQuantityChangeFilter</li>
+            <li class="success">SearchProvider WithQuantityAfterChangeFilter</li>
+            <li class="success">SearchProvider WithUserIdFilter</li>
+            <li class="success">SearchProvider WithUpdatedAtFilter</li>
+            <li class="success">SearchProvider WithCaseSensitiveFlag</li>
+            <li class="success">SearchProvider WithMultipleFilters</li>
+            <li class="success">SearchProvider WithInvalidUpdatedAt</li>
             <li class="success">Valid stock log</li>
             <li class="success">Required fields validation</li>
-            <li class="defect">Type validation</li>
-            <li class="defect">Quantity fields numerical validation</li>
-            <li class="defect">Reason length validation</li>
+            <li class="success">Type validation</li>
+            <li class="success">Quantity fields numerical validation</li>
+            <li class="success">Reason length validation</li>
             <li class="success">Valid quantity values</li>
             <li class="success">Negative quantity values</li>
+        </ul>
+        <h2>User</h2>
+        <ul>
+            <li class="success">Get collection name</li>
+            <li class="success">Model static method</li>
+            <li class="success">Default role is staff</li>
+            <li class="success">Attribute labels are defined</li>
+            <li class="success">Validation RequiredFields DefaultScenario</li>
+            <li class="success">Validation PasswordRequired OnInsertScenario</li>
+            <li class="success">Validation PasswordRepeatCompare OnInsertScenario</li>
+            <li class="success">Validation UsernameUnique FailsWhenTaken</li>
+            <li class="success">Validation EmailUnique FailsWhenTaken</li>
+            <li class="success">Validation Role Invalid</li>
+            <li class="success">Validation Role Valid</li>
+            <li class="success">ValidatePassword CorrectPassword</li>
+            <li class="success">ValidatePassword IncorrectPassword</li>
+            <li class="success">HashPassword ReturnsValidHash</li>
+            <li class="success">BeforeSave NewRecord SetsTimestampsAndHashesPassword</li>
+            <li class="success">BeforeSave ExistingRecord UpdatesTimestampAndHashesPasswordIfSet</li>
+            <li class="success">BeforeSave LoginScenario DoesNotHashPassword</li>
+            <li class="success">BeforeSave NoPasswordChange DoesNotRehash</li>
+        </ul>
+        <h2>User Identity</h2>
+        <ul>
+            <li class="success">GetId ReturnsCorrectId</li>
+            <li class="success">GetId WhenNotSet ReturnsNull</li>
+            <li class="success">Authenticate WithEmptyUsername ReturnsFalse</li>
+            <li class="success">Authenticate WithNonExistentUser ReturnsFalse</li>
+            <li class="success">UserIdentity InitializesCorrectly</li>
+            <li class="defect">Authenticate WithInvalidPassword ReturnsFalse</li>
+            <li class="defect">Authenticate WithValidCredentials ReturnsTrue</li>
+        </ul>
+        <h2>Utility Helpers</h2>
+        <ul>
+            <li class="success">Sanitize ReplacesSpecialCharacters</li>
+            <li class="success">Sanitize AllowsLettersNumbersDots</li>
+            <li class="success">Sanitize MultipleSpecialCharacters</li>
+            <li class="success">Sanitize EmptyString</li>
+        </ul>
+        <h2>Variant</h2>
+        <ul>
+            <li class="success">Public properties</li>
+            <li class="success">Rules</li>
+            <li class="success">Attribute labels</li>
+            <li class="success">Default values</li>
+            <li class="success">GetFinalPrice WithPositiveAdditionalPrice</li>
+            <li class="success">GetFinalPrice WithNegativeAdditionalPrice</li>
+            <li class="success">GetFinalPrice WithZeroAdditionalPrice</li>
+            <li class="success">GetFinalPrice WithZeroBasePrice</li>
+            <li class="success">Valid variant</li>
+            <li class="success">Required fields validation</li>
+            <li class="success">Sku length validation</li>
+            <li class="success">Name length validation</li>
+            <li class="success">QuantityValidation NegativeValue</li>
+            <li class="success">QuantityValidation NonInteger</li>
+            <li class="success">QuantityValidation ZeroValue</li>
+            <li class="success">AdditionalPriceValidation NumericValue</li>
+            <li class="success">AdditionalPriceValidation FloatValue</li>
+            <li class="success">GetFinalPrice WithFloatingPointPrecision</li>
+        </ul>
+        <h2>Web User</h2>
+        <ul>
+            <li class="success">GetRole WhenGuest ReturnsNull</li>
+            <li class="success">GetName WhenGuest ReturnsNull</li>
+            <li class="success">HasRole WhenGuest ReturnsFalse</li>
+            <li class="success">GetRole WhenAuthenticated ReturnsRole</li>
+            <li class="success">GetName WhenAuthenticated ReturnsUsername</li>
+            <li class="success">HasRole WithSingleRole ReturnsCorrectBoolean</li>
+            <li class="success">HasRole WithArrayOfRoles ReturnsCorrectBoolean</li>
+            <li class="success">IsAdmin ReturnsCorrectBoolean</li>
+            <li class="success">IsStaff ReturnsCorrectBoolean</li>
+            <li class="success">IsManager ReturnsCorrectBoolean</li>
         </ul>
     </body>
 </html>

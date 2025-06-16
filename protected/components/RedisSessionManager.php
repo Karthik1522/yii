@@ -28,7 +28,8 @@ class RedisSessionManager extends CHttpSession
 		}
 	}
 
-	/**
+	/**in_array($value, $this->availableSaveHandlers)) {
+			ini_set(
 	 * @param string $value the current session save path
 	 * @throws CException if the path is not string
 	 */
